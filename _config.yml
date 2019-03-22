@@ -7,13 +7,13 @@ title: t-jk的随笔小记
 subtitle:
 description:
 keywords:
-author: liushao121
+author: t-jk
 language:
 timezone:
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://yoursite.com
+url: https://t-jk.gitee.io
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
