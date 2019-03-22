@@ -45,7 +45,7 @@ style="border:1px solid;padding:0 12px 5px 12px;font-size:32px;">32px</div></div
 
 > 浏览器的默认字体尺寸已被设置为 14px
 
-  <div style="border: 1px solid; padding:0 14px;font-size:16px"><div 
+  <div style="border: 1px solid; padding:0 14px;font-size:14px"><div 
   style="font-size:14px">测试文本 font-size:14px</div><div 
   style="font-size:1em">测试文本 font-size:1em</div><div 
   style="font-size:2em">测试文本 font-size:2em</div></div>
