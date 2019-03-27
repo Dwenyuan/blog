@@ -398,7 +398,7 @@ gitment:
   lazy: false # Comments lazy loading with a button
   cleanly: false # Hide 'Powered by ...' on footer, and more
   language: # Force language, or auto switch by theme
-  github_user: liushao121 # MUST HAVE, Your Github ID
+  github_user: 11424989 # MUST HAVE, Your Github ID
   github_repo: https://github.com/liushao121/comment.git # MUST HAVE, The repo you use to store Gitment comments
   client_id: cc2a198f79e6f6b06f74 # MUST HAVE, Github client id for the Gitment
   client_secret: ba5a06d8756035f0325f8e8402f121449114629d # EITHER this or proxy_gateway, Github access secret token for the Gitment
