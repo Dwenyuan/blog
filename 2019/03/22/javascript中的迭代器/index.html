@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="javascript,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="什么是迭代器 什么是可遍历对象 手动实现一个迭代器 JavaScript 中的生成器函数function* 和 生成器对象 Generators 生成器的高级用法 yield* 的用法。 next() 的参数   同步写法异步执行  什么是迭代器一个迭代器对象 ，知道如何每次访问集合中的一项， 并跟踪该序列中的当前位置。在 JavaScript 中 迭代器是一个对象，它提供了一个 next()">
+<meta name="keywords" content="javascript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="javascript中的迭代器">
+<meta property="og:url" content="https://dwenyuan.github.io/2019/03/22/javascript中的迭代器/index.html">
+<meta property="og:site_name" content="t-jk的随笔小记">
+<meta property="og:description" content="什么是迭代器 什么是可遍历对象 手动实现一个迭代器 JavaScript 中的生成器函数function* 和 生成器对象 Generators 生成器的高级用法 yield* 的用法。 next() 的参数   同步写法异步执行  什么是迭代器一个迭代器对象 ，知道如何每次访问集合中的一项， 并跟踪该序列中的当前位置。在 JavaScript 中 迭代器是一个对象，它提供了一个 next()">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-03-27T07:10:34.896Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="javascript中的迭代器">
+<meta name="twitter:description" content="什么是迭代器 什么是可遍历对象 手动实现一个迭代器 JavaScript 中的生成器函数function* 和 生成器对象 Generators 生成器的高级用法 yield* 的用法。 next() 的参数   同步写法异步执行  什么是迭代器一个迭代器对象 ，知道如何每次访问集合中的一项， 并跟踪该序列中的当前位置。在 JavaScript 中 迭代器是一个对象，它提供了一个 next()">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://dwenyuan.github.io/2019/03/22/javascript中的迭代器/">
+
+
+
+
+
+  <title>javascript中的迭代器 | t-jk的随笔小记</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-136134682-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">t-jk的随笔小记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://dwenyuan.github.io/2019/03/22/javascript中的迭代器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="t-jk">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="t-jk的随笔小记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">javascript中的迭代器</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-22T17:04:10+08:00">
+                2019-03-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/javascript/" itemprop="url" rel="index">
+                    <span itemprop="name">javascript</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <ul>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E8%BF%AD%E4%BB%A3%E5%99%A8">什么是迭代器</a></li>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%AF%E9%81%8D%E5%8E%86%E5%AF%B9%E8%B1%A1">什么是可遍历对象</a></li>
+<li><a href="#%E6%89%8B%E5%8A%A8%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E8%BF%AD%E4%BB%A3%E5%99%A8">手动实现一个迭代器</a></li>
+<li><a href="#javascript-%E4%B8%AD%E7%9A%84%E7%94%9F%E6%88%90%E5%99%A8%E5%87%BD%E6%95%B0function-%E5%92%8C-%E7%94%9F%E6%88%90%E5%99%A8%E5%AF%B9%E8%B1%A1-generators">JavaScript 中的生成器函数<code>function*</code> 和 生成器对象 <code>Generators</code></a></li>
+<li><a href="#%E7%94%9F%E6%88%90%E5%99%A8%E7%9A%84%E9%AB%98%E7%BA%A7%E7%94%A8%E6%B3%95">生成器的高级用法</a><ul>
+<li><a href="#yield-%E7%9A%84%E7%94%A8%E6%B3%95"><code>yield*</code> 的用法。</a></li>
+<li><a href="#next-%E7%9A%84%E5%8F%82%E6%95%B0"><code>next()</code> 的参数</a></li>
+</ul>
+</li>
+<li><a href="#%E5%90%8C%E6%AD%A5%E5%86%99%E6%B3%95%E5%BC%82%E6%AD%A5%E6%89%A7%E8%A1%8C">同步写法异步执行</a></li>
+</ul>
+<h1 id="什么是迭代器"><a href="#什么是迭代器" class="headerlink" title="什么是迭代器"></a>什么是迭代器</h1><p>一个迭代器对象 ，知道如何每次访问集合中的一项， 并跟踪该序列中的当前位置。在 JavaScript 中 迭代器是一个对象，它提供了一个 next() 方法，用来返回序列中的下一项。这个方法返回包含两个属性：done 和 value<br><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Iteration_protocols" target="_blank" rel="noopener">迭代器协议</a></p>
+<h1 id="什么是可遍历对象"><a href="#什么是可遍历对象" class="headerlink" title="什么是可遍历对象"></a>什么是可遍历对象</h1><p>简单来说在 JavaScript 中的可遍历对象就是可以放在 for…of 中遍历的对象,他需要有一个 <strong>[Symbol.iterator]</strong> 属性,该属性是一个可以返回一个 next()方法的方法,next 方法会返回一个 value 和 done 标志位的方法 ,形如下方</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> object =&#123;&#125;;</span><br><span class="line">object[<span class="built_in">Symbol</span>.iterator]=<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    next:<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">      <span class="keyword">return</span> &#123;</span><br><span class="line">        value: ...,</span><br><span class="line">        done: <span class="literal">true</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="手动实现一个迭代器"><a href="#手动实现一个迭代器" class="headerlink" title="手动实现一个迭代器"></a>手动实现一个迭代器</h1><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在 javascript 中有 for...of 来遍历每一项元素</span></span><br><span class="line"><span class="keyword">let</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];</span><br><span class="line"><span class="comment">// 使用 for...of 遍历数组</span></span><br><span class="line"><span class="keyword">for</span> (i <span class="keyword">of</span> arr) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(i);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> object = &#123;&#125;;</span><br><span class="line">object[<span class="built_in">Symbol</span>.iterator] = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> index = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    next: <span class="function"><span class="params">()</span> =&gt;</span> (&#123;</span><br><span class="line">      value: index++,</span><br><span class="line">      done: index &gt; <span class="number">100</span></span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> item <span class="keyword">of</span> object) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(item);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="JavaScript-中的生成器函数function-和-生成器对象-Generators"><a href="#JavaScript-中的生成器函数function-和-生成器对象-Generators" class="headerlink" title="JavaScript 中的生成器函数function* 和 生成器对象 Generators"></a>JavaScript 中的生成器函数<code>function*</code> 和 生成器对象 <code>Generators</code></h1><p>在 es6 中为了方便生成迭代器引用了 生成器函数<code>function*</code> 和 生成器对象 <code>Generators</code>。 使用 <code>function*</code> 可以很方便的生成一个返回 next() 方法的方法</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">3</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">4</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">5</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> iterator = gen();</span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value: 1, done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value: 2, done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value: 3, done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value: 4, done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value: 5, done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value: undefined, done: true &#125;</span></span><br></pre></td></tr></table></figure>
+<p>我们将方法赋值赋值给 <strong>[Symbol.iterator]</strong> 就可以得到一个可遍历对象</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> object = &#123;&#125;;</span><br><span class="line"><span class="comment">// 将object变成一个可遍历对象</span></span><br><span class="line">object[<span class="built_in">Symbol</span>.iterator] = iter;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> i <span class="keyword">of</span> object) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(i);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 输出</span></span><br><span class="line"><span class="comment">// 1</span></span><br><span class="line"><span class="comment">// 2</span></span><br><span class="line"><span class="comment">// 3</span></span><br><span class="line"><span class="comment">// 4</span></span><br><span class="line"><span class="comment">// 5</span></span><br></pre></td></tr></table></figure>
+<h1 id="生成器的高级用法"><a href="#生成器的高级用法" class="headerlink" title="生成器的高级用法"></a>生成器的高级用法</h1><h2 id="yield-的用法。"><a href="#yield-的用法。" class="headerlink" title="yield* 的用法。"></a><code>yield*</code> 的用法。</h2><p><code>yield*</code> 委托给另一个 generator 或可迭代对象</p>
+<p>委托给另外一个生成器</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">"gen1_1"</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">"gen1_2"</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen2</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">"gen2_1"</span>;</span><br><span class="line">  <span class="keyword">yield</span>* gen1();</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">"gen2_2"</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> gen = gen2();</span><br><span class="line"><span class="built_in">console</span>.log(gen.next()); <span class="comment">// &#123; value: 'gen2_1', done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(gen.next()); <span class="comment">// &#123; value: 'gen1_1', done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(gen.next()); <span class="comment">// &#123; value: 'gen1_2', done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(gen.next()); <span class="comment">// &#123; value: 'gen2_2', done: false &#125;</span></span><br></pre></td></tr></table></figure>
+<p>委托给一个可迭代对象</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">yield</span>* [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">  <span class="keyword">yield</span>* <span class="string">"45"</span>;</span><br><span class="line">  <span class="keyword">yield</span>* <span class="keyword">new</span> <span class="built_in">Set</span>([<span class="number">6</span>, <span class="number">7</span>]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> g = gen();</span><br><span class="line"><span class="built_in">console</span>.log(g.next()); <span class="comment">// &#123; value: 1, done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(g.next()); <span class="comment">// &#123; value: 2, done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(g.next()); <span class="comment">// &#123; value: 3, done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(g.next()); <span class="comment">// &#123; value: '4', done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(g.next()); <span class="comment">// &#123; value: '5', done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(g.next()); <span class="comment">// &#123; value: 6, done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(g.next()); <span class="comment">// &#123; value: 7, done: false &#125;</span></span><br></pre></td></tr></table></figure>
+<h2 id="next-的参数"><a href="#next-的参数" class="headerlink" title="next() 的参数"></a><code>next()</code> 的参数</h2><p>传递给 next()的参数值将被视为暂停生成器的最后一个 yield 表达式的结果。如下</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> a = <span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">let</span> b = <span class="keyword">yield</span> a + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> g = gen();</span><br><span class="line"><span class="built_in">console</span>.log(g.next()); <span class="comment">// &#123; value: 1, done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(g.next(<span class="number">2</span>)); <span class="comment">// &#123; value: 3, done: false &#125;</span></span><br></pre></td></tr></table></figure>
+<p>上面代码中 <code>g.next(2)</code> 中的参数 2 就作为了变量 <code>a</code> 的值</p>
+<h1 id="同步写法异步执行"><a href="#同步写法异步执行" class="headerlink" title="同步写法异步执行"></a>同步写法异步执行</h1><p>有了上面生成器的几个特征，我们来想一下如果 <code>yield</code> 后面返回的是一个 <code>Promise</code> 对象会怎么样。很容易想到如果返回 <code>Promise</code> 对象的话我们可以在其回调函数中调用生成器的<code>next()</code> 方法来获取下一个<code>yield</code> 的执行结果</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> a = <span class="keyword">yield</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="params">resolve</span> =&gt;</span> setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> resolve(<span class="string">"first"</span>), <span class="number">1000</span>));</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"a=&gt;"</span>, a);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> b = <span class="keyword">yield</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="params">resolve</span> =&gt;</span> setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> resolve(<span class="string">"sec"</span>), <span class="number">1000</span>));</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"b=&gt;"</span>, b);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> c = <span class="keyword">yield</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="params">resolve</span> =&gt;</span> setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> resolve(<span class="string">"third"</span>), <span class="number">1000</span>));</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"c=&gt;"</span>, c);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> g = gen();</span><br><span class="line">g.next().value.then(<span class="function"><span class="params">first</span> =&gt;</span></span><br><span class="line">  g.next(first).value.then(<span class="function"><span class="params">sec</span> =&gt;</span></span><br><span class="line">    g.next(sec).value.then(<span class="function"><span class="params">third</span> =&gt;</span> g.next(third)))</span><br><span class="line">);</span><br><span class="line"><span class="comment">// a=&gt; first</span></span><br><span class="line"><span class="comment">// b=&gt; second</span></span><br><span class="line"><span class="comment">// c=&gt; third</span></span><br></pre></td></tr></table></figure>
+<p>下面调用<code>g.next().value</code>执行的代码基本是不变的，所以我们可以抽象一个简单的执行器出来。执行器的参数是一个生成器函数</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">runner</span>(<span class="params">gen</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> g = gen();</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">invoke</span>(<span class="params">arg</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> &#123; value, done &#125; = g.next(arg);</span><br><span class="line">    <span class="comment">// 如果遍历结束了,就不再执行</span></span><br><span class="line">    <span class="keyword">if</span> (done) &#123;</span><br><span class="line">      <span class="keyword">return</span> value;</span><br><span class="line">    &#125;</span><br><span class="line">    value.then(<span class="function"><span class="params">res</span> =&gt;</span> invoke(res));</span><br><span class="line">  &#125;</span><br><span class="line">  invoke();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>有了这个执行器我们就可以写一些异步操作了。尽管看起来像同步代码，但它的确是异步执行的</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">runner(<span class="function"><span class="keyword">function</span>*(<span class="params"></span>) </span>&#123;</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">let</span> a = <span class="keyword">yield</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="params">resolve</span> =&gt;</span></span><br><span class="line">      setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> resolve(<span class="string">"first"</span>), <span class="number">1000</span>)</span><br><span class="line">    );</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"a=&gt;"</span>, a);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> b = <span class="keyword">yield</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="params">resolve</span> =&gt;</span></span><br><span class="line">      setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> resolve(<span class="string">"sec"</span>), <span class="number">1000</span>)</span><br><span class="line">    );</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"b=&gt;"</span>, b);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> c = <span class="keyword">yield</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="params">resolve</span> =&gt;</span></span><br><span class="line">      setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> resolve(<span class="string">"third"</span>), <span class="number">1000</span>)</span><br><span class="line">    );</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"c=&gt;"</span>, c);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// a=&gt; first</span></span><br><span class="line"><span class="comment">// b=&gt; second</span></span><br><span class="line"><span class="comment">// c=&gt; third</span></span><br></pre></td></tr></table></figure>
+<p>上面也就是 <a href="https://github.com/tj/co" target="_blank" rel="noopener">co 库</a> 的基本原理, es7 之后出现了 <code>async</code> 和 <code>await</code> 的语法糖，基本原理也是如此。</p>
+<p>关于 es7 的异步方法定义和使用如下，它会在 <code>res</code> 得到赋值后才会执行下一步代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> fn()&#123;</span><br><span class="line">  <span class="keyword">let</span> res = <span class="keyword">await</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve</span>)=&gt;</span>...)</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/javascript/" rel="tag"># javascript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/22/css中的单位/" rel="next" title="css中的单位">
+                <i class="fa fa-chevron-left"></i> css中的单位
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">t-jk</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是迭代器"><span class="nav-number">1.</span> <span class="nav-text">什么是迭代器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是可遍历对象"><span class="nav-number">2.</span> <span class="nav-text">什么是可遍历对象</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#手动实现一个迭代器"><span class="nav-number">3.</span> <span class="nav-text">手动实现一个迭代器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JavaScript-中的生成器函数function-和-生成器对象-Generators"><span class="nav-number">4.</span> <span class="nav-text">JavaScript 中的生成器函数function* 和 生成器对象 Generators</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#生成器的高级用法"><span class="nav-number">5.</span> <span class="nav-text">生成器的高级用法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#yield-的用法。"><span class="nav-number">5.1.</span> <span class="nav-text">yield* 的用法。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#next-的参数"><span class="nav-number">5.2.</span> <span class="nav-text">next() 的参数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#同步写法异步执行"><span class="nav-number">6.</span> <span class="nav-text">同步写法异步执行</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">t-jk</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

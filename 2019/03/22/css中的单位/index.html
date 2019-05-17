@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="css,前端,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="印刷单位 网页单位 示例 预设单位 示例     视窗单位 示例   基于文字单位 示例    印刷单位 pt：打印机的每个点，定义 1 pt ＝ 1/72 in，如果在 72 dpi 的系統上 1 px = 1 pt，但如果在 96 dpi 的系統上 1 px = 0.75 pt ( 72/96 = 0.75 )。 in：英寸，在 96 dpi 的系统上 1 in = 96 px。 cm：厘米">
+<meta name="keywords" content="css,前端">
+<meta property="og:type" content="article">
+<meta property="og:title" content="css中的单位">
+<meta property="og:url" content="https://dwenyuan.github.io/2019/03/22/css中的单位/index.html">
+<meta property="og:site_name" content="t-jk的随笔小记">
+<meta property="og:description" content="印刷单位 网页单位 示例 预设单位 示例     视窗单位 示例   基于文字单位 示例    印刷单位 pt：打印机的每个点，定义 1 pt ＝ 1/72 in，如果在 72 dpi 的系統上 1 px = 1 pt，但如果在 96 dpi 的系統上 1 px = 0.75 pt ( 72/96 = 0.75 )。 in：英寸，在 96 dpi 的系统上 1 in = 96 px。 cm：厘米">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-03-22T10:08:25.251Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="css中的单位">
+<meta name="twitter:description" content="印刷单位 网页单位 示例 预设单位 示例     视窗单位 示例   基于文字单位 示例    印刷单位 pt：打印机的每个点，定义 1 pt ＝ 1/72 in，如果在 72 dpi 的系統上 1 px = 1 pt，但如果在 96 dpi 的系統上 1 px = 0.75 pt ( 72/96 = 0.75 )。 in：英寸，在 96 dpi 的系统上 1 in = 96 px。 cm：厘米">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://dwenyuan.github.io/2019/03/22/css中的单位/">
+
+
+
+
+
+  <title>css中的单位 | t-jk的随笔小记</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-136134682-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">t-jk的随笔小记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://dwenyuan.github.io/2019/03/22/css中的单位/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="t-jk">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="t-jk的随笔小记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">css中的单位</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-22T14:03:37+08:00">
+                2019-03-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/前端开发/" itemprop="url" rel="index">
+                    <span itemprop="name">前端开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <ul>
+<li><a href="#%E5%8D%B0%E5%88%B7%E5%8D%95%E4%BD%8D">印刷单位</a></li>
+<li><a href="#%E7%BD%91%E9%A1%B5%E5%8D%95%E4%BD%8D">网页单位</a><ul>
+<li><a href="#%E7%A4%BA%E4%BE%8B">示例</a></li>
+<li><a href="#%E9%A2%84%E8%AE%BE%E5%8D%95%E4%BD%8D">预设单位</a><ul>
+<li><a href="#%E7%A4%BA%E4%BE%8B-1">示例</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E8%A7%86%E7%AA%97%E5%8D%95%E4%BD%8D">视窗单位</a><ul>
+<li><a href="#%E7%A4%BA%E4%BE%8B-2">示例</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9F%BA%E4%BA%8E%E6%96%87%E5%AD%97%E5%8D%95%E4%BD%8D">基于文字单位</a><ul>
+<li><a href="#%E7%A4%BA%E4%BE%8B-3">示例</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="印刷单位"><a href="#印刷单位" class="headerlink" title="印刷单位"></a>印刷单位</h1><ul>
+<li>pt：打印机的每个点，定义 1 pt ＝ 1/72 in，如果在 72 dpi 的系統上 1 px = 1 pt，但如果在 96 dpi 的系統上 1 px = 0.75 pt ( 72/96 = 0.75 )。</li>
+<li>in：英寸，在 96 dpi 的系统上 1 in = 96 px。</li>
+<li>cm：厘米，在 96 dpi 的系统上 1 cm = 37.795275593333 px。</li>
+<li>mm：毫米，在 96 dpi 的系统上 1 cm = 3.7795275593333 px。</li>
+</ul>
+<h1 id="网页单位"><a href="#网页单位" class="headerlink" title="网页单位"></a>网页单位</h1><ul>
+<li>px：绝对单位，代表屏幕中的每个像素点( pixel )，像素 px 是相对于显示器屏幕分辨率而言的。</li>
+<li>em：相对长度单位。<strong>相对于浏览器的默认字体尺寸</strong>。<ul>
+<li>em 的值并不是固定的</li>
+<li>em 会继承父级元素的字体大小。</li>
+<li>所有未经调整的浏览器都符合: 1em=16px</li>
+</ul>
+</li>
+<li>rem：相对单位，相对根元素（html）的 font-size。</li>
+<li>%：相对单位，相对父元素的百分比。</li>
+</ul>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><blockquote>
+<p>px 只要设定多少 px 就显示多大的字体</p>
+</blockquote>
+<div style="border:1px solid;padding:0 12px 5px 12px;font-size:16px;">16px<div style="border:1px solid;padding:0 12px 5px 12px;font-size:20px;">20px<div style="border:1px solid;padding:0 12px 5px 12px;font-size:24px;">24px<div style="border:1px solid;padding:0 12px 5px 12px;font-size:16px;">16px<div style="border:1px solid;padding:0 12px 5px 12px;font-size:32px;">32px</div></div></div></div><br></div>
+
+<blockquote>
+<p>浏览器的默认字体尺寸已被设置为 14px</p>
+</blockquote>
+  <div style="border: 1px solid; padding:0 14px;font-size:14px"><div style="font-size:14px">测试文本 font-size:14px</div><div style="font-size:1em">测试文本 font-size:1em</div><div style="font-size:2em">测试文本 font-size:2em</div></div>
+
+<blockquote>
+<p>em相对于父元素而言</p>
+</blockquote>
+<div style="border: 1px solid; padding:0 12px 5px 12px; font-size:14px">测试文本 font-size:14px<div style="font-size:1.2em;border:1px solid;padding:0 12px 5px 12px;">测试文本 font-size:1.2em<div style="font-size:1.2em;border:1px solid;padding:0 12px 5px 12px;">测试文本 font-size:1.2em<div style="font-size:1.2em;border:1px solid;padding:0 12px 5px 12px;">测试文本 font-size:1.2em</div></div></div><br></div>
+
+<blockquote>
+<p>rem 相对与根元素而言</p>
+</blockquote>
+<div style="font-size:1.2rem;border:1px solid;padding:0 12px 5px 12px;">测试文本 font-size:1.2rem<div style="font-size:1.2rem;border:1px solid;padding:0 12px 5px 12px;">测试文本 font-size:1.2rem<div style="font-size:1.2rem;border:1px solid;padding:0 12px 5px 12px;">测试文本 font-size:1.2rem</div></div></div>
+
+<h3 id="预设单位"><a href="#预设单位" class="headerlink" title="预设单位"></a>预设单位</h3><ul>
+<li>medium : 预设值，等于 16px ( h4 预设值 )</li>
+<li>xx-small : medium 的 0.6 倍 ( h6 预设值 )</li>
+<li>x-small : medium 的 0.75 倍</li>
+<li>small : medium 的 0.8 倍 ( h5 预设值，W3C 定义 0.89，实测约 0.8 )</li>
+<li>large : medium 的 1.1 倍 ( h3 预设值，W3C 定义 1.2，实测约 1.1 )</li>
+<li>x-large : medium 的 1.5 倍 ( h2 预设值 )</li>
+<li>xx-large : medium 的 2 倍 ( h1 预设值 )</li>
+<li>smaller : 约为父级的 80%</li>
+<li>larger : 约为父级的 120%</li>
+</ul>
+<h4 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h4><div style="font-size:medium;border: 1px solid; padding:0 12px;">测试文本 font-size:medium</div><div style="font-size:xx-small;border:1px solid;padding:0 12px;">测试文本 font-size:xx-small</div><div style="font-size:x-small;border:1px solid;padding:0 12px;">测试文本 font-size:x-small</div><div style="font-size:small;border:1px solid;padding:0 12px;">测试文本 font-size:small</div><div style="font-size:large;border:1px solid;padding:0 12px;">测试文本 font-size:large</div><div style="font-size:x-large;border:1px solid;padding:0 12px;">测试文本 font-size:x-large</div><div style="font-size:xx-large;border:1px solid;padding:0 12px;">测试文本 font-size:xx-large</div>
+
+<div style="font-size:medium;border:1px solid;padding:0 12px 5px 12px;">测试文本 font-size:medium<div style="font-size:larger;border:1px solid;padding:0 12px 5px 12px;">测试文本 font-size:larger(120%)<div style="font-size:larger;border:1px solid;padding:0 12px 5px 12px;">测试文本 font-size:larger(120%)<div style="font-size:smaller;border:1px solid;padding:0 12px 5px 12px;">测试文本 font-size:smaller(80%)<div style="font-size:smaller;border:1px solid;padding:0 12px 5px 12px;">测试文本 font-size:smaller(80%)<div style="font-size:smaller;border:1px solid;padding:0 12px 5px 12px;">测试文本 font-size:smaller(80%)</div></div></div></div></div><br></div>
+
+<h1 id="视窗单位"><a href="#视窗单位" class="headerlink" title="视窗单位"></a>视窗单位</h1><ul>
+<li>vw 视窗宽度，1vw=视窗宽度的 1%</li>
+<li>vh 视窗高度，1vh=视窗高度的 1%</li>
+<li>vmin vw 和 vh 中较小的那个</li>
+<li>vmax vw 和 vh 中较大的那个。</li>
+</ul>
+<h3 id="示例-2"><a href="#示例-2" class="headerlink" title="示例"></a>示例</h3><div style="width:20vw;background-color:bisque;">测试文本20vw</div><br><div style="width:40vw;background-color:bisque;">测试文本40vw</div>
+
+<h1 id="基于文字单位"><a href="#基于文字单位" class="headerlink" title="基于文字单位"></a>基于文字单位</h1><ul>
+<li>ch 数字 0 的宽度</li>
+<li>ex 当前字体的小写 x 字母的高度或者 1/2 的 1em</li>
+</ul>
+<h3 id="示例-3"><a href="#示例-3" class="headerlink" title="示例"></a>示例</h3><ul>
+<li><p>与数字 0 的宽度对比</p>
+<div style="border:1px solid;display:inline-block;">iiii</div><span> - 默认宽度</span><br><div style="border:1px solid;display:inline-block;width:4ch;">iiii</div><span> - 宽度4ch</span><br><div style="border:1px solid;display:inline-block;">0000</div>
+</li>
+<li><p>对比小写字母的高度</p>
+<div style="border:1px solid;display:inline-block;line-height:1;">默认 - x</div><div style="border:1px solid;display:inline-block;line-height:1;height:3ex;">x - 3ex</div>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/css-前端/" rel="tag"># css,前端</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/13/代码的腐化/" rel="next" title="代码的腐化">
+                <i class="fa fa-chevron-left"></i> 代码的腐化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/22/javascript中的迭代器/" rel="prev" title="javascript中的迭代器">
+                javascript中的迭代器 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">t-jk</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#印刷单位"><span class="nav-number">1.</span> <span class="nav-text">印刷单位</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网页单位"><span class="nav-number">2.</span> <span class="nav-text">网页单位</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#示例"><span class="nav-number">2.0.1.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#预设单位"><span class="nav-number">2.0.2.</span> <span class="nav-text">预设单位</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#示例-1"><span class="nav-number">2.0.2.1.</span> <span class="nav-text">示例</span></a></li></ol></li></ol></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#视窗单位"><span class="nav-number">3.</span> <span class="nav-text">视窗单位</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#示例-2"><span class="nav-number">3.0.1.</span> <span class="nav-text">示例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基于文字单位"><span class="nav-number">4.</span> <span class="nav-text">基于文字单位</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#示例-3"><span class="nav-number">4.0.1.</span> <span class="nav-text">示例</span></a></li></ol></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">t-jk</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
