@@ -97,25 +97,40 @@
 //     .value.then(sec => g.next(sec).value.then(third => g.next(third)))
 // );
 
-function runner(gen) {
-  let g = gen();
-  function invoke(arg) {
-    let { value, done } = g.next(arg);
-    // 如果遍历结束了,就不再执行
-    if (!done) {
-      value.then(res => invoke(res));
-    }
-  }
-  invoke();
-}
+// function runner(gen) {
+//   let g = gen();
+//   function invoke(arg) {
+//     let { value, done } = g.next(arg);
+//     // 如果遍历结束了,就不再执行
+//     if (!done) {
+//       value.then(res => invoke(res));
+//     }
+//   }
+//   invoke();
+// }
 
-runner(function*() {
-  let a = yield new Promise(resolve => setTimeout(() => resolve("first"), 1e3));
-  console.log("a=>", a);
-  let b = yield new Promise(resolve =>
-    setTimeout(() => resolve("second"), 1e3)
-  );
-  console.log("b=>", b);
-  let c = yield new Promise(resolve => setTimeout(() => resolve("third"), 1e3));
-  console.log("c=>", c);
-});
+// runner(function*() {
+//   let a = yield new Promise(resolve => setTimeout(() => resolve("first"), 1e3));
+//   console.log("a=>", a);
+//   let b = yield new Promise(resolve =>
+//     setTimeout(() => resolve("second"), 1e3)
+//   );
+//   console.log("b=>", b);
+//   let c = yield new Promise(resolve => setTimeout(() => resolve("third"), 1e3));
+//   console.log("c=>", c);
+// });
+
+var a = 10;
+function fn() {
+  console.log(a);
+}
+var json = {
+  a: 5,
+  fn: function(fn) {
+    fn();
+    console.log(this);
+    console.log(arguments);
+    // arguments[0]();
+  }
+};
+json.fn(fn);
