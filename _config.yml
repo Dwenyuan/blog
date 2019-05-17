@@ -79,3 +79,4 @@ theme: next
 deploy:
   type: git
   repo: https://github.com/Dwenyuan/blog.git
+  branch: master
