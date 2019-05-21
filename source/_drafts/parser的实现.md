@@ -8,7 +8,7 @@ tags: 前端
 - [读取 CSV 文件并转换为对象](#%E8%AF%BB%E5%8F%96-csv-%E6%96%87%E4%BB%B6%E5%B9%B6%E8%BD%AC%E6%8D%A2%E4%B8%BA%E5%AF%B9%E8%B1%A1)
   - [使用字符串里面的 split 函数](#%E4%BD%BF%E7%94%A8%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%87%8C%E9%9D%A2%E7%9A%84-split-%E5%87%BD%E6%95%B0)
   - [正常解析 CSV 文件](#%E6%AD%A3%E5%B8%B8%E8%A7%A3%E6%9E%90-csv-%E6%96%87%E4%BB%B6)
-    - [第一步](#%E7%AC%AC%E4%B8%80%E6%AD%A5)
+    - [首先需要列出状态转移表](#%E9%A6%96%E5%85%88%E9%9C%80%E8%A6%81%E5%88%97%E5%87%BA%E7%8A%B6%E6%80%81%E8%BD%AC%E7%A7%BB%E8%A1%A8)
     - [确定状态发生时的执行方法](#%E7%A1%AE%E5%AE%9A%E7%8A%B6%E6%80%81%E5%8F%91%E7%94%9F%E6%97%B6%E7%9A%84%E6%89%A7%E8%A1%8C%E6%96%B9%E6%B3%95)
 
 # 什么是 csv
@@ -80,24 +80,204 @@ john, "hello world"
 
 这里使用有限状态机解析，一般来说可以分为以下几步执行
 
-### 第一步
-
-首先需要列出状态转移表
+### 首先需要列出状态转移表
 
 1. Start 开始状态 最开始解析时会是这个状态
 2. NonQuote 非引号状态。 读取到正常字符时为这个状态
 3. Quote 引号状态。 第一个字符读取到引号时设置为这个状态
-4. EndField 字段结束状态。没有引号的状态下读取到空格表示该字段已经结束，前面有引号然后读取到第二个引号时表示该字段已经结束，后面再有正常字符时会报错。
+4. 字段结束状态。没有引号的状态下读取到空格表示该字段已经结束，前面有引号然后读取到第二个引号时表示该字段已经结束，后面再有正常字符时会报错。
 5. Separator 分割符状态。 读取到`,`号时设置这个状态
-6. RowSeparator 行分隔符。 读取到换行符时设置这个状态
+6. RowEnd 行分隔符。 读取到换行符时设置这个状态
 7. Error 错误状态。发生错误时设置这个状态
 
-| event\state   | Start     | NonQuote     | Quote    | EndField     | Separator    | RowSeparator | Error |
-| ------------- | --------- | ------------ | -------- | ------------ | ------------ | ------------ | ----- |
-| `[0-9a-zA-z]` | NonQuote  | NonQuote     | NonQuote | Error        | NonQuote     | NonQuote     | Error |
-| `,`           | Separator | Separator    | Quote    | Separator    | Separator    | Separator    | Error |
-| `"`           | Quote     | Error        | EndField | Error        | Quote        | Quote        | Error |
-| `space`       | Start     | EndField     | Quote    | EndField     | Separator    | RowSeparator | Error |
-| `\r`,`\n`     | Error     | RowSeparator | Error    | RowSeparator | RowSeparator | Error        | Error |
+| event\state | Start     | NonQuote  | Quote    | EndField  | Separator | RowEnd    | Error |
+| ----------- | --------- | --------- | -------- | --------- | --------- | --------- | ----- |
+| `,`         | Separator | Separator | Quote    | Separator | Separator | Separator | Error |
+| `"`         | Quote     | Error     | EndField | Error     | Quote     | Quote     | Error |
+| `space`     | Start     | EndField  | Quote    | EndField  | Separator | RowEnd    | Error |
+| `\r`,`\n`   | Error     | RowEnd    | Error    | RowEnd    | RowEnd    | Error     | Error |
+| `\w`        | NonQuote  | NonQuote  | Quote    | Error     | NonQuote  | NonQuote  | Error |
 
 ### 确定状态发生时的执行方法
+
+按照以上表格设置各种情况下的分支
+
+```typescript
+enum StateType {
+  // 新开始字段
+  Start,
+  //  非引号字段
+  NonQuote,
+  //   引号字段
+  Quote,
+  // 字段结束标记
+  EndField,
+  //   分割字段
+  Separator,
+  //   行分割符
+  RowEnd,
+  //   语法错误
+  Error
+}
+const COMMA = ",";
+const QUOTE = '"';
+const NEWLINE = "\n";
+const RETURN = "\r";
+const SPACE = " ";
+export function parser(data = "") {
+  data = data.trim();
+  let state: StateType = StateType.Start as StateType;
+  let result = [];
+  let row = [];
+  let field = "";
+  for (let index = 0; index <= data.length; index++) {
+    if (index === data.length) {
+      row.push(field);
+      result.push(row);
+      field = "";
+      row = [];
+      break;
+    }
+    const ch = data.charAt(index);
+    switch (state) {
+      case StateType.Start:
+        switch (ch) {
+          case COMMA:
+            row.push(field);
+            field = "";
+            state = StateType.Separator;
+            break;
+          case QUOTE:
+            state = StateType.Quote;
+            break;
+          case RETURN:
+          case NEWLINE:
+            row.push(field);
+            result.push(row);
+            field = "";
+            row = [];
+            state = StateType.RowEnd;
+            break;
+          default:
+            field += ch;
+            state = StateType.NonQuote;
+            break;
+        }
+        break;
+      case StateType.NonQuote:
+        switch (ch) {
+          case COMMA:
+            row.push(field);
+            field = "";
+            state = StateType.Separator;
+            break;
+          case QUOTE:
+            state = StateType.Error;
+            break;
+          case SPACE:
+            state = StateType.EndField;
+          case RETURN:
+          case NEWLINE:
+            row.push(field);
+            result.push(row);
+            field = "";
+            row = [];
+            state = StateType.RowEnd;
+          default:
+            field += ch;
+            break;
+        }
+        break;
+      case StateType.Quote:
+        switch (ch) {
+          case QUOTE:
+            state = StateType.EndField;
+            break;
+          case RETURN:
+          case NEWLINE:
+            state = StateType.Error;
+            break;
+          default:
+            field += ch;
+            break;
+        }
+        break;
+      case StateType.EndField:
+        switch (ch) {
+          case COMMA:
+            row.push(field);
+            field = "";
+            state = StateType.Separator;
+            break;
+          case QUOTE:
+            state = StateType.Error;
+            break;
+          case SPACE:
+            break;
+          case RETURN:
+          case NEWLINE:
+            row.push(field);
+            result.push(row);
+            field = "";
+            row = [];
+            state = StateType.RowEnd;
+            break;
+          default:
+            state = StateType.Error;
+            break;
+        }
+        break;
+      case StateType.Separator:
+        switch (ch) {
+          case COMMA:
+            row.push(field);
+            field = "";
+            state = StateType.Separator;
+            break;
+          case QUOTE:
+            field = "";
+            state = StateType.Quote;
+            break;
+          case SPACE:
+            break;
+          case RETURN:
+          case NEWLINE:
+            row.push(field);
+            result.push(row);
+            field = "";
+            row = [];
+            state = StateType.RowEnd;
+          default:
+            field += ch;
+            state = StateType.NonQuote;
+            break;
+        }
+        break;
+      case StateType.RowEnd:
+        switch (ch) {
+          case COMMA:
+            state = StateType.Separator;
+            break;
+          case QUOTE:
+            state = StateType.Quote;
+            break;
+          case SPACE:
+          case RETURN:
+          case NEWLINE:
+            state = StateType.Error;
+            break;
+          default:
+            field += ch;
+            state = StateType.NonQuote;
+            break;
+        }
+        break;
+      case StateType.Error:
+        break;
+      default:
+        break;
+    }
+  }
+  return result;
+}
+```

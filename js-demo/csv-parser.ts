@@ -1,97 +1,171 @@
-const data = `john,"hello,world"
-jack,"12,road"`;
 enum StateType {
   // 新开始字段
-  NewFieldStart,
+  Start,
   //  非引号字段
-  NonQuotesField,
+  NonQuote,
   //   引号字段
-  QuotesField,
+  Quote,
+  // 字段结束标记
+  EndField,
   //   分割字段
-  FieldSeparator,
-  //   引号中的引号
-  QuoteInQuotesField,
+  Separator,
   //   行分割符
-  RowSeparator,
+  RowEnd,
   //   语法错误
   Error
 }
-
-function parser(data = "") {
-  let state: StateType = StateType.NewFieldStart as StateType;
+const COMMA = ",";
+const QUOTE = '"';
+const NEWLINE = "\n";
+const RETURN = "\r";
+const SPACE = " ";
+export function parser(data = "") {
+  data = data.trim();
+  let state: StateType = StateType.Start as StateType;
   let result = [];
   let row = [];
   let field = "";
-  for (let index = 0; index < data.length; index++) {
+  for (let index = 0; index <= data.length; index++) {
+    if (index === data.length) {
+      row.push(field);
+      result.push(row);
+      field = "";
+      row = [];
+      break;
+    }
     const ch = data.charAt(index);
     switch (state) {
-      case StateType.NewFieldStart:
+      case StateType.Start:
         switch (ch) {
-          case ",":
+          case COMMA:
             row.push(field);
             field = "";
-            state = StateType.FieldSeparator;
+            state = StateType.Separator;
             break;
-          case '"':
-            state = StateType.QuotesField;
+          case QUOTE:
+            state = StateType.Quote;
             break;
-          case "\n":
-            state = StateType.RowSeparator;
-            break;
-          case "\r":
-            state = StateType.RowSeparator;
+          case RETURN:
+          case NEWLINE:
+            row.push(field);
+            result.push(row);
+            field = "";
+            row = [];
+            state = StateType.RowEnd;
             break;
           default:
             field += ch;
-            state = StateType.NonQuotesField;
+            state = StateType.NonQuote;
             break;
         }
         break;
-      case StateType.NonQuotesField:
+      case StateType.NonQuote:
         switch (ch) {
-          case ",":
+          case COMMA:
             row.push(field);
             field = "";
+            state = StateType.Separator;
             break;
-          case '"':
+          case QUOTE:
+            state = StateType.Error;
+            break;
+          case SPACE:
+            state = StateType.EndField;
+          case RETURN:
+          case NEWLINE:
+            row.push(field);
+            result.push(row);
+            field = "";
+            row = [];
+            state = StateType.RowEnd;
+          default:
+            field += ch;
+            break;
+        }
+        break;
+      case StateType.Quote:
+        switch (ch) {
+          case QUOTE:
+            state = StateType.EndField;
+            break;
+          case RETURN:
+          case NEWLINE:
             state = StateType.Error;
             break;
           default:
             field += ch;
-            state = StateType.NonQuotesField;
             break;
         }
         break;
-      case StateType.QuotesField:
+      case StateType.EndField:
         switch (ch) {
-          case '"':
-            state = StateType.NonQuotesField;
-            break;
-          default:
-            field += ch;
-            state = StateType.QuotesField;
-            break;
-        }
-        break;
-      case StateType.FieldSeparator:
-        switch (ch) {
-          case '"':
-            field = "";
-            state = StateType.QuotesField;
-            break;
-          case ",":
+          case COMMA:
             row.push(field);
             field = "";
-            state = StateType.FieldSeparator;
+            state = StateType.Separator;
+            break;
+          case QUOTE:
+            state = StateType.Error;
+            break;
+          case SPACE:
+            break;
+          case RETURN:
+          case NEWLINE:
+            row.push(field);
+            result.push(row);
+            field = "";
+            row = [];
+            state = StateType.RowEnd;
+            break;
           default:
-            field += ch;
-            state = StateType.NonQuotesField;
+            state = StateType.Error;
             break;
         }
         break;
-      case StateType.QuoteInQuotesField:
+      case StateType.Separator:
+        switch (ch) {
+          case COMMA:
+            row.push(field);
+            field = "";
+            state = StateType.Separator;
+            break;
+          case QUOTE:
+            field = "";
+            state = StateType.Quote;
+            break;
+          case SPACE:
+            break;
+          case RETURN:
+          case NEWLINE:
+            row.push(field);
+            result.push(row);
+            field = "";
+            row = [];
+            state = StateType.RowEnd;
+          default:
+            field += ch;
+            state = StateType.NonQuote;
+            break;
+        }
         break;
-      case StateType.RowSeparator:
+      case StateType.RowEnd:
+        switch (ch) {
+          case COMMA:
+            state = StateType.Separator;
+            break;
+          case QUOTE:
+            state = StateType.Quote;
+            break;
+          case SPACE:
+          case RETURN:
+          case NEWLINE:
+            state = StateType.Error;
+            break;
+          default:
+            field += ch;
+            state = StateType.NonQuote;
+            break;
+        }
         break;
       case StateType.Error:
         break;
@@ -99,4 +173,5 @@ function parser(data = "") {
         break;
     }
   }
+  return result;
 }
